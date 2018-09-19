@@ -26,6 +26,7 @@ nodo *raiz=NULL;
 
 nodo * create_nodo(char inf[],nodo* left, nodo* right);
 int evaluar(nodo* reco);
+void cargar_variables(nodo* reco);
 
 %}
  
@@ -44,11 +45,11 @@ int evaluar(nodo* reco);
 %%
  
 program: expresion ';'  {printf("Resultado: %d\n",evaluar($1));} 
-    | declaration expresion ';' { printf("Todavia no se puede man");}
+    | declaration ';' expresion ';' {cargar_variables($1); printf("Resultado: %d\n",evaluar($3));}
     ; 
 
-declaration: VAR ID '=' expresion { printf("Todavia no se puede man"); }
-    | VAR ID '=' expresion ';' declaration { printf("Todavia no se puede man"); }
+declaration: VAR ID '=' expresion { $$ = create_nodo("=",create_nodo($2,NULL,NULL),$4); }
+    | declaration ';' VAR ID '=' expresion  { }
     ;
   
 expresion: INT          {char str[LIMIT];
@@ -112,6 +113,9 @@ int evaluar(nodo* reco){
     value = evaluar(reco->izq) + evaluar(reco->der);
   else if(strcmp(reco->info,"*") == 0)
     value = evaluar(reco->izq) * evaluar(reco->der);
+  else if(exists_var(reco->info) != -1){
+    value = val(reco->info);
+  }
   else{
     value = atoi(reco->info);
   }
@@ -125,4 +129,8 @@ void borrar(nodo *reco){
         borrar(reco->der);
         free(reco);
     }
+}
+
+void cargar_variables(nodo* reco){
+  add_var((reco->izq)->info, evaluar(reco->der));
 }
