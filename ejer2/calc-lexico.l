@@ -1,11 +1,3 @@
-/*
-  Pre-Proyecto Taller de Diseño de Software
-  Integrantes:
-    Fischer, Sebastian 37128158
-    Gardiola, Joaquin 38418091
-    Giachero, Ezequiel 39737931
- */
-
 %{
 
 #include <stdlib.h>
